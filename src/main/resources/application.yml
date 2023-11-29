@@ -1,0 +1,69 @@
+server:
+  port: 8989
+
+spring:
+  datasource:
+    url: ENC(qNWiyfiLVM7gcG+i32abH5YsuNvYR1maFJpPBmoFE/z4k0P/0BN9oFOQTaReDfXl)
+    username: ENC(ZORAVZXTa6RXUoxnM3DZOQ==)
+    password: ENC(0L+viCCtXEjEyDjVFl7VKgdAokMPtz2f)
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        hibernate:
+        "[format_sql]": true            #SQL 보기 좋게 출력
+        "[user_sql_comments]": true     #SQL 생성시 주석 포함
+        "[highlight_sql]": true         #SQL 색깔
+        "[hbm2ddl.auto]": update
+    open-in-view: true
+    show-sql: true
+  data:
+    mongodb:
+      uri: ENC(yO9iVHY+Y+ekOWQVsDrfCGz7cuiiGuKg/NlXlUT7tinmaFbtLKobqlY63w5+82vGqxZWJr6YAa+p8Cr4ouGkDAQaH5pIbo+eTjtV9XlCHHEkdlhCXOIBvg==)
+    redis:
+      host: ENC(UhY6yuvmWwYC5ywR5mdXmRzw3ygSFrmY)
+      port: 6379
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 10
+          min-idle: 2
+      password: ENC(IH1K1vglnbxSV99k1f1MBS1KkywUyGCT)
+  cache:
+    type: redis
+  security:
+    user:
+      name: ENC(ZsL0K7XP3PGgpkAj0i2XBQ==)
+      password: ENC(x6a+l1WKbqSmSA35Cvt2GBAsnsaNGtbf)
+  kafka:
+    producer:
+      bootstrap-servers: 59.3.28.12:9092,59.3.28.12:9093,59.3.28.12:9094
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      bootstrap-servers: 59.3.28.12:9092,59.3.28.12:9093,59.3.28.12:9094
+      group-id: group-id-sam9mo
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+jwt:
+  header: "Authorization"
+  accessPrefix: "Bearer "
+  secret: ENC(HI+M8Q72uAy/j8Uieo71W5GfWRiBbydHxe81KM7trRxi4m0RM4iEGwv9Yy1mi86giVE3dJJmkZbj66+BUF8ZiwGB4HgjXnQkh5aUZzLdzzmUjxlFIw4oyo1iM0HxMC/sVTclr3TvEMBtQdwB4CB/P7X3DyIvG8jnf7gePWIkZu+tZ7DfRytZUA==)
+  accessTokenExpirationTime: 60
+  refreshTokenExpirationTime: 86400
+
+springdoc:
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  paths-to-match: /**
+  swagger-ui:
+    path: /
+    display-request-duration: true
+    groups-order: desc
+    operations-sorter: alpha
+    disable-swagger-default-url: true
+  api-docs:
+    groups:
+      enabled: true
