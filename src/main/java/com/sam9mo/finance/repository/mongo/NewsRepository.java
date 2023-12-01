@@ -16,8 +16,7 @@ public interface NewsRepository extends MongoRepository<News, String> {
     Page<News> findByNewsCategoryContainingIgnoreCase(String newsCategory, Pageable pageable);
     Page<News> findByNewsYearAndNewsMonthAndNewsDay(String newsYear, String newsMonth, String newsDay, Pageable pageable);
 
-    @Aggregation(pipeline = { "{ '$group': { '_id' : 'news_company' } }" })
-    List<String> findDistinctNewsCompany();
-
+    @Aggregation(pipeline = { "{ $group: { _id: \"$stock_company\" } }", "{ $project: { _id: 0, stock_company: \"$_id\" } }" })
+    List<String> findDistinctStockCompany();
     Optional<News> findById(String id);
 }

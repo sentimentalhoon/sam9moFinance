@@ -53,15 +53,10 @@ public class AdminController {
         return ApiResponse.success(adminService.getAdmins());
     }
 
-    @Operation(summary = "최신 뉴스 15개씩 페이징")
-    @PostMapping("/news")
-    public ApiResponse getAllNews(@RequestBody final NewsVo newsVo) {
-        return ApiResponse.success(newsService.getAllTutorialsPage(newsVo.getStockCompany(), newsVo.getNewsCategory(), newsVo.getNewsYear(), newsVo.getNewsMonth(), newsVo.getNewsDay(), newsVo.getPage(), 15));
-    }
-    @Operation(summary = "최신 뉴스 15개씩 페이징")
+    @Operation(summary = "뉴스에 등록된 모든 회사 가져오기")
     @GetMapping("/news/company")
     public ApiResponse getNewsAllCompany() {
-        return ApiResponse.success(newsService.findDistinctNewsCompany());
+        return ApiResponse.success(newsService.findDistinctStockCompany());
     }
     @Operation(summary = "선택한 하나의 뉴스 읽어오기")
     @GetMapping("/news/{id}")
@@ -74,12 +69,17 @@ public class AdminController {
         }
         return ApiResponse.error("뉴스를 불러오는데 실패하였습니다.");
     }
+
+    @Operation(summary = "최신 뉴스 15개씩 페이징")
+    @PostMapping("/news")
+    public ApiResponse getAllNews(@RequestBody final NewsVo newsVo) {
+        return ApiResponse.success(newsService.getAllTutorialsPage(newsVo.getStockCompany(), newsVo.getNewsCategory(), newsVo.getNewsYear(), newsVo.getNewsMonth(), newsVo.getNewsDay(), newsVo.getPage(), 15));
+    }
     @Operation(summary = "하나의 뉴스 업데이트")
     @PutMapping("/news")
     public ApiResponse updateNews(@RequestBody final News news) {
         return ApiResponse.success(newsService.updateNews(news));
     }
-
     @Operation(summary = "하나의 뉴스 삭제")
     @DeleteMapping("/news")
     public ApiResponse deleteNews() {

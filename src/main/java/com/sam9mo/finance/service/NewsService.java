@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.swing.text.html.Option;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -73,7 +74,9 @@ public class NewsService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 뉴스를 찾을 수 없습니다."));
     }
 
-    public List<String> findDistinctNewsCompany() { return newsRepository.findDistinctNewsCompany(); }
+    public List<String> findDistinctStockCompany() {
+        return newsRepository.findDistinctStockCompany();
+    }
     public Optional<News> findById(String id){
         return newsRepository.findById(id);
     }
