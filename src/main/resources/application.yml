@@ -20,7 +20,12 @@ spring:
     show-sql: true
   data:
     mongodb:
-      uri: ENC(yO9iVHY+Y+ekOWQVsDrfCGz7cuiiGuKg/NlXlUT7tinmaFbtLKobqlY63w5+82vGqxZWJr6YAa+p8Cr4ouGkDAQaH5pIbo+eTjtV9XlCHHEkdlhCXOIBvg==)
+      authentication-database: admin
+      host: ENC(vY3XEtGX/fIohGirRLc2f/i6Jrt2l0dq)
+      port: 27017
+      username: ENC(XxohAuNTGxgApsh6C7Vl3Q==)
+      password: ENC(p4cBV9/BsVQujt6AbMmkNd0yNECQuZaV)
+      database: ENC(Uky7ACnik82b82glWaJCjg==)
     redis:
       host: ENC(UhY6yuvmWwYC5ywR5mdXmRzw3ygSFrmY)
       port: 6379

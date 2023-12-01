@@ -1,8 +1,9 @@
-package com.sam9mo.finance.repository;
+package com.sam9mo.finance.repository.sql;
 
 import com.sam9mo.finance.common.MemberType;
 import com.sam9mo.finance.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.List;
 import java.util.Optional;
