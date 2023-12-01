@@ -4,7 +4,7 @@ import com.sam9mo.finance.dto.member.request.MemberUpdateRequest;
 import com.sam9mo.finance.dto.member.response.MemberDeleteResponse;
 import com.sam9mo.finance.dto.member.response.MemberInfoResponse;
 import com.sam9mo.finance.dto.member.response.MemberUpdateResponse;
-import com.sam9mo.finance.repository.MemberRepository;
+import com.sam9mo.finance.repository.sql.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,6 +39,7 @@ public class MemberService {
                 .filter(member -> encoder.matches(request.password(), member.getPassword()))
                 .map(member -> {
                     member.update(request, encoder);
+                    memberRepository.save(member);
                     return MemberUpdateResponse.of(true, member);
                 })
                 .orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 일치하지 않습니다."));
