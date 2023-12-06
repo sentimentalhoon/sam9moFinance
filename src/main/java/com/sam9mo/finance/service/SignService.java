@@ -6,22 +6,17 @@ import com.sam9mo.finance.dto.sign_up.request.SignUpRequest;
 import com.sam9mo.finance.dto.sign_up.response.SignUpResponse;
 import com.sam9mo.finance.entity.Member;
 import com.sam9mo.finance.entity.MemberRefreshToken;
-import com.sam9mo.finance.repository.redis.MemberTokenRepository;
 import com.sam9mo.finance.repository.sql.MemberRefreshTokenRepository;
 import com.sam9mo.finance.repository.sql.MemberRepository;
 import com.sam9mo.finance.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Service
@@ -30,6 +25,7 @@ public class SignService {
     private final MemberRefreshTokenRepository memberRefreshTokenRepository;
     private final TokenProvider tokenProvider;
     private final PasswordEncoder encoder;
+
     @Transactional
     public SignUpResponse registMember(SignUpRequest request) {
         Member member = memberRepository.save(Member.from(request, encoder));
@@ -62,9 +58,11 @@ public class SignService {
                             memberRefreshToken.updateAccessToken(accessToken);
                             memberRefreshToken.updateAccessTokenExpirationDateTime(accessTokenExpirationDateTime);
                             memberRefreshToken.updateFinanceAgent(financeAgent);
+
                             },
                         () -> {
                             MemberRefreshToken memberRefreshToken = new MemberRefreshToken(member, refreshToken, accessToken, accessTokenExpirationDateTime, refreshTokenExpirationDateTime, financeAgent);
+
                             memberRefreshTokenRepository.save(memberRefreshToken);
                         }
 

@@ -35,8 +35,13 @@ public class RedisConfig {
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 
+        // string type 저장시 아래 설정 적용됨.
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer()); // JSON 포맷으로 저장
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+
+        // repository 에서 저장시 hash type으로 저장되므로, 아래 설정 적용됨.
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
 
         redisTemplate.setConnectionFactory(connectionFactory);
         return redisTemplate;
