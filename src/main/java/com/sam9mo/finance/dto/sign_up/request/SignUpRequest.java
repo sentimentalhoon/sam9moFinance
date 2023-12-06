@@ -9,7 +9,9 @@ public record SignUpRequest(
         String password,
         @Schema(description = "회원 이름", example = "콜라곰")
         String name,
-        @Schema(description = "회원 나이", example = "30")
-        Integer age
+        @Schema(description = "회원 접속 주소", example = "USER")
+        String ip,
+        @Schema(description = "회원 접속 브라우저", example = "USER")
+        String userAgent
 ) {
 }

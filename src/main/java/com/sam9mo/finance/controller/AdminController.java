@@ -27,9 +27,9 @@ public class AdminController {
     private final AdminService adminService;
     private final NewsService newsService;
     @Operation(summary = "회원 목록 조회")
-    @GetMapping("/members")
-    public ApiResponse getAllMembers() {
-        return ApiResponse.success(adminService.getMembers());
+    @GetMapping("/members/{page}")
+    public ApiResponse getAllMembers(@PathVariable final int page) {
+        return ApiResponse.success(adminService.getMembers(page));
     }
     @Operation(summary = "회원 정보 조회")
     @PostMapping("/members/member")
@@ -56,7 +56,10 @@ public class AdminController {
     @Operation(summary = "뉴스에 등록된 모든 회사 가져오기")
     @GetMapping("/news/company")
     public ApiResponse getNewsAllCompany() {
-        return ApiResponse.success(newsService.findDistinctStockCompany());
+        Map<String, Object> response = new HashMap<>();
+        response.put("stockCompany", newsService.findDistinctStockCompany());
+        response.put("newsCategory", newsService.findDistinctNewsCategory());
+        return ApiResponse.success(response);
     }
     @Operation(summary = "선택한 하나의 뉴스 읽어오기")
     @GetMapping("/news/{id}")
@@ -73,7 +76,7 @@ public class AdminController {
     @Operation(summary = "최신 뉴스 15개씩 페이징")
     @PostMapping("/news")
     public ApiResponse getAllNews(@RequestBody final NewsVo newsVo) {
-        return ApiResponse.success(newsService.getAllTutorialsPage(newsVo.getStockCompany(), newsVo.getNewsCategory(), newsVo.getNewsYear(), newsVo.getNewsMonth(), newsVo.getNewsDay(), newsVo.getPage(), 15));
+        return ApiResponse.success(newsService.getAllTutorialsPage(newsVo.getStockCompany(), newsVo.getNewsCategory(), newsVo.getNewsYear(), newsVo.getNewsMonth(), newsVo.getNewsDay(), newsVo.getPage(), 100));
     }
     @Operation(summary = "하나의 뉴스 업데이트")
     @PutMapping("/news")

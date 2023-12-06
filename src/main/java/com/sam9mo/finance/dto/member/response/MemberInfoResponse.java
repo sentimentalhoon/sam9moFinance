@@ -14,21 +14,27 @@ public record MemberInfoResponse(
         String account,
         @Schema(description = "회원 이름", example = "콜라곰")
         String name,
-        @Schema(description = "회원 나이", example = "30")
-        Integer age,
         @Schema(description = "회원 타입", example = "USER")
         MemberType type,
+        @Schema(description = "회원 접속 주소", example = "USER")
+        String ip,
+        @Schema(description = "회원 접속 브라우저", example = "USER")
+        String userAgent,
         @Schema(description = "회원 생성일", example = "2023-05-11T15:00:00")
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        @Schema(description = "최근 접속일", example = "2023-05-11T15:00:00")
+        LocalDateTime lastConnectedAt
 ) {
     public static MemberInfoResponse from(Member member) {
         return new MemberInfoResponse(
                 member.getId(),
                 member.getAccount(),
                 member.getName(),
-                member.getAge(),
                 member.getType(),
-                member.getCreatedAt()
+                member.getIp(),
+                member.getUserAgent(),
+                member.getCreatedAt(),
+                member.getLastConnectedAt()
         );
     }
 }

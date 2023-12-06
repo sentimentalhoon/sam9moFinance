@@ -18,5 +18,7 @@ public interface NewsRepository extends MongoRepository<News, String> {
 
     @Aggregation(pipeline = { "{ $group: { _id: \"$stock_company\" } }", "{ $project: { _id: 0, stock_company: \"$_id\" } }" })
     List<String> findDistinctStockCompany();
+    @Aggregation(pipeline = { "{ $group: { _id: \"$news_category\" } }", "{ $project: { _id: 0, news_category: \"$_id\" } }" })
+    List<String> findDistinctNewsCategory();
     Optional<News> findById(String id);
 }

@@ -1,5 +1,6 @@
 package com.sam9mo.finance.security;
 
+import com.sam9mo.finance.repository.sql.MemberRefreshTokenRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,7 +27,7 @@ import java.util.Optional;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
-
+    private final MemberRefreshTokenRepository memberRefreshTokenRepository;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -67,15 +68,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (refreshToken == null) {
                 throw exception;
             }
+
             String oldAccessToken = parseBearerToken(request, HttpHeaders.AUTHORIZATION);
             tokenProvider.validateRefreshToken(refreshToken, oldAccessToken);
             String newAccessToken = tokenProvider.recreateAccessToken(oldAccessToken);
+            long accessTokenExpirationDateTime = tokenProvider.getTokenExpirationDateTime(newAccessToken);
             User user = parseUserSpecification(newAccessToken);
             AbstractAuthenticationToken authenticated = UsernamePasswordAuthenticationToken.authenticated(user, newAccessToken, user.getAuthorities());
             authenticated.setDetails(new WebAuthenticationDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticated);
 
-            response.setHeader("New-Access-Token", newAccessToken);
+            memberRefreshTokenRepository.findByRefreshToken(refreshToken)
+                    .ifPresent(
+                            memberRefreshToken -> {
+                                memberRefreshToken.updateAccessToken(newAccessToken);
+                                memberRefreshToken.updateAccessTokenExpirationDateTime(accessTokenExpirationDateTime);
+                                memberRefreshTokenRepository.save(memberRefreshToken);
+                                response.setHeader("New-Access-Token", newAccessToken);
+                            });
         } catch (Exception e) {
             request.setAttribute("exception", e);
         }
