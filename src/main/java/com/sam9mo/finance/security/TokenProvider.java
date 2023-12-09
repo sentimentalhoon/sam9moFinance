@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sam9mo.finance.repository.sql.MemberRefreshTokenRepository;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -13,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sam9mo.finance.entity.MemberRefreshToken;
 
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
@@ -34,7 +31,6 @@ public class TokenProvider {
     private final String issuer;
     private final long reissueLimit;
     private final MemberRefreshTokenRepository memberRefreshTokenRepository;
-
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public TokenProvider(
@@ -71,7 +67,10 @@ public class TokenProvider {
     }
 
     public long getTokenExpirationDateTime(String token){
-        return validateAndParseToken(token).getBody().getExpiration().getTime();
+        return validateAndParseToken(token)
+                .getBody()
+                .getExpiration()
+                .getTime();
     }
 
     public String validateTokenAndGetSubject(String token) {

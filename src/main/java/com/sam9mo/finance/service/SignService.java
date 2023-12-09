@@ -1,5 +1,6 @@
 package com.sam9mo.finance.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sam9mo.finance.dto.sign_in.request.SignInRequest;
 import com.sam9mo.finance.dto.sign_in.response.SignInResponse;
 import com.sam9mo.finance.dto.sign_up.request.SignUpRequest;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -36,10 +39,7 @@ public class SignService {
         }
         return SignUpResponse.from(member);
     }
-    @Value("${expiration-minutes}")
-    private long expirationMinutes;
-    @Value("${refresh-expiration-hours}")
-    private long refreshExpirationHours;
+
 
     @Transactional
     public SignInResponse signIn(SignInRequest request, String financeAgent) {
@@ -58,18 +58,24 @@ public class SignService {
                             memberRefreshToken.updateAccessToken(accessToken);
                             memberRefreshToken.updateAccessTokenExpirationDateTime(accessTokenExpirationDateTime);
                             memberRefreshToken.updateFinanceAgent(financeAgent);
-
                             },
                         () -> {
                             MemberRefreshToken memberRefreshToken = new MemberRefreshToken(member, refreshToken, accessToken, accessTokenExpirationDateTime, refreshTokenExpirationDateTime, financeAgent);
-
                             memberRefreshTokenRepository.save(memberRefreshToken);
                         }
-
                 );
         LocalDateTime oldLastConnectedTime = member.getLastConnectedAt();
         member.updateLastConnectedAt();
         memberRepository.save(member);
         return new SignInResponse(member.getName(), member.getType(), accessToken, refreshToken, oldLastConnectedTime, accessTokenExpirationDateTime, refreshTokenExpirationDateTime);
+    }
+
+    @Transactional
+    public void signOut(String account) {
+        memberRepository.findByAccount(account).flatMap(
+                presentMember -> memberRefreshTokenRepository.findById(presentMember.getId())).ifPresent(
+                        (memberRefreshToken) -> {
+                            memberRefreshTokenRepository.deleteById(memberRefreshToken.getMemberId());
+        });
     }
 }

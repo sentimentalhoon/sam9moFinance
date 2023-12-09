@@ -28,4 +28,9 @@ public class SignController {
     public ApiResponse signIn(@RequestBody SignInRequest request, @RequestHeader("finance-agent") String financeAgent) {
         return ApiResponse.success(signService.signIn(request, financeAgent));
     }
+    @Operation(summary = "로그아웃")
+    @PostMapping("/sign-out")
+    public void signOut(@RequestBody SignInRequest request) {
+        signService.signOut(request.account());
+    }
 }

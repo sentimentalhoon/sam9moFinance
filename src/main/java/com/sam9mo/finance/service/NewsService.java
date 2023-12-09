@@ -45,11 +45,9 @@ public class NewsService {
             }else if (!newsYear.isBlank() && !newsMonth.isBlank() && !newsDay.isBlank()) {
                 pageTuts = newsRepository.findByNewsYearAndNewsMonthAndNewsDay(newsYear, newsMonth, newsDay, paging);
             }else {
-
                 pageTuts = newsRepository.findAll(paging);
             }
             newsData = pageTuts.getContent();
-
             response.put("newsData", newsData);
             response.put("currentPage", pageTuts.getNumber());
             response.put("totalItems", pageTuts.getTotalElements());
