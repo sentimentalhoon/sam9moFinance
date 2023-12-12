@@ -9,6 +9,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,22 +33,21 @@ public class NewsService {
 
         Map<String, Object> response = new HashMap<>();
         try {
-            List<News> newsData = new ArrayList<News>();
-            Pageable paging = PageRequest.of(page, size);
+            List<News> newsData;
 
+            Pageable paging = PageRequest.of(page, size, Sort.by("id").descending());
             Page<News> pageTuts;
 
-            if (stockCompany != null)
+            if (!stockCompany.isBlank()) {
                 pageTuts = newsRepository.findByStockCompanyContainingIgnoreCase(stockCompany, paging);
-            else if (newsCategory != null)
+            }else if (!newsCategory.isBlank()) {
                 pageTuts = newsRepository.findByNewsCategoryContainingIgnoreCase(newsCategory, paging);
-            else if (newsYear != null && newsMonth != null && newsDay != null)
+            }else if (!newsYear.isBlank() && !newsMonth.isBlank() && !newsDay.isBlank()) {
                 pageTuts = newsRepository.findByNewsYearAndNewsMonthAndNewsDay(newsYear, newsMonth, newsDay, paging);
-            else
+            }else {
                 pageTuts = newsRepository.findAll(paging);
-
+            }
             newsData = pageTuts.getContent();
-
             response.put("newsData", newsData);
             response.put("currentPage", pageTuts.getNumber());
             response.put("totalItems", pageTuts.getTotalElements());
@@ -77,6 +77,10 @@ public class NewsService {
     public List<String> findDistinctStockCompany() {
         return newsRepository.findDistinctStockCompany();
     }
+    public List<String> findDistinctNewsCategory() {
+        return newsRepository.findDistinctNewsCategory();
+    }
+
     public Optional<News> findById(String id){
         return newsRepository.findById(id);
     }

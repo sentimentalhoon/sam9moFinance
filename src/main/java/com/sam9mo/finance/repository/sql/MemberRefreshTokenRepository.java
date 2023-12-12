@@ -9,4 +9,5 @@ import java.util.UUID;
 
 public interface MemberRefreshTokenRepository extends JpaRepository<MemberRefreshToken, UUID> {
     Optional<MemberRefreshToken> findByMemberIdAndReissueCountLessThan(UUID id, long count);
+    Optional<MemberRefreshToken> findByRefreshToken(String token);
 }

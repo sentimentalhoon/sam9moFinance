@@ -4,13 +4,11 @@ import com.sam9mo.finance.dto.ApiResponse;
 import com.sam9mo.finance.dto.sign_in.request.SignInRequest;
 import com.sam9mo.finance.dto.sign_up.request.SignUpRequest;
 import com.sam9mo.finance.service.SignService;
+import com.sun.net.httpserver.Headers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "회원 가입 및 로그인")
 @RequiredArgsConstructor
@@ -27,7 +25,12 @@ public class SignController {
 
     @Operation(summary = "로그인")
     @PostMapping("/sign-in")
-    public ApiResponse signIn(@RequestBody SignInRequest request) {
-        return ApiResponse.success(signService.signIn(request));
+    public ApiResponse signIn(@RequestBody SignInRequest request, @RequestHeader("finance-agent") String financeAgent) {
+        return ApiResponse.success(signService.signIn(request, financeAgent));
+    }
+    @Operation(summary = "로그아웃")
+    @PostMapping("/sign-out")
+    public void signOut(@RequestBody SignInRequest request) {
+        signService.signOut(request.account());
     }
 }

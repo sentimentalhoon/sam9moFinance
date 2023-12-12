@@ -13,7 +13,10 @@ public record MemberUpdateRequest(
         String newPassword,
         @Schema(description = "회원 이름", example = "콜라곰")
         String name,
-        @Schema(description = "회원 나이", example = "30")
-        Integer age
+        @Schema(description = "회원 접속 아이피", example = "192.168.0.1")
+        String ip,
+        @Schema(description = "회원 접속 브라우저", example = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")
+        String userAgent
+
 ) {
 }

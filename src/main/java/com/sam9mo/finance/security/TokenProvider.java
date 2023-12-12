@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sam9mo.finance.entity.MemberRefreshToken;
+
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
@@ -30,7 +31,6 @@ public class TokenProvider {
     private final String issuer;
     private final long reissueLimit;
     private final MemberRefreshTokenRepository memberRefreshTokenRepository;
-
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public TokenProvider(
@@ -64,6 +64,13 @@ public class TokenProvider {
                 .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
                 .setExpiration(Date.from(Instant.now().plus(refreshExpirationHours, ChronoUnit.HOURS)))
                 .compact();
+    }
+
+    public long getTokenExpirationDateTime(String token){
+        return validateAndParseToken(token)
+                .getBody()
+                .getExpiration()
+                .getTime();
     }
 
     public String validateTokenAndGetSubject(String token) {
