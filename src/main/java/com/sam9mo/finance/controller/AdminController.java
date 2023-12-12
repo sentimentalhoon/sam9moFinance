@@ -1,5 +1,6 @@
 package com.sam9mo.finance.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sam9mo.finance.dto.ApiResponse;
 import com.sam9mo.finance.dto.CompanyRequest;
 import com.sam9mo.finance.dto.NewsVo;
@@ -8,11 +9,10 @@ import com.sam9mo.finance.dto.member.response.MemberInfoResponse;
 import com.sam9mo.finance.entity.KospiCode;
 import com.sam9mo.finance.entity.Member;
 import com.sam9mo.finance.entity.News;
+import com.sam9mo.finance.entity.StockHokaDomestic;
 import com.sam9mo.finance.security.AdminAuthorize;
-import com.sam9mo.finance.service.AdminService;
-import com.sam9mo.finance.service.KosdaqService;
-import com.sam9mo.finance.service.KospiService;
-import com.sam9mo.finance.service.NewsService;
+import com.sam9mo.finance.service.*;
+import com.sam9mo.finance.service.redis.RedisTemplateService;
 import com.sam9mo.finance.utils.Util;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,10 +30,13 @@ import java.util.*;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
+
     private final AdminService adminService;
     private final NewsService newsService;
     private final KospiService kospiService;
     private final KosdaqService kosdaqService;
+    private final RedisTemplateService redisTemplateService;
+
     @Operation(summary = "회원 목록 조회")
     @GetMapping("/members/{page}")
     public ApiResponse getAllMembers(@PathVariable final int page) {
@@ -107,4 +110,9 @@ public class AdminController {
         return ApiResponse.success("뉴스 삭제");
     }
 
+    @Operation(summary = "주식 호가 조회")
+    @GetMapping("/hoka/{stockCode}")
+    public ApiResponse getHoka(@PathVariable final String stockCode) {
+        return ApiResponse.success(redisTemplateService.getData("stock:" + stockCode, StockHokaDomestic.class));
+    }
 }

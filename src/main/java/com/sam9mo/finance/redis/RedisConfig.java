@@ -1,5 +1,6 @@
 package com.sam9mo.finance.redis;
 
+import com.sam9mo.finance.entity.StockHokaDomestic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +13,8 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
 @Configuration
+@EnableRedisRepositories
 public class RedisConfig {
     @Value("${spring.data.redis.host}")
     private String redisHost;
@@ -28,11 +29,11 @@ public class RedisConfig {
         redisStandaloneConfiguration.setHostName(redisHost);
         redisStandaloneConfiguration.setPort(redisPort);
         redisStandaloneConfiguration.setPassword(redisPassword);
+        redisStandaloneConfiguration.setDatabase(0);
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
-
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+    public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 
         // string type 저장시 아래 설정 적용됨.
@@ -43,13 +44,13 @@ public class RedisConfig {
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(new StringRedisSerializer());
 
-        redisTemplate.setConnectionFactory(connectionFactory);
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }
     @Bean
-    StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    StringRedisTemplate stringRedisTemplate() {
         StringRedisTemplate template = new StringRedisTemplate();
-        template.setConnectionFactory(redisConnectionFactory);
+        template.setConnectionFactory(redisConnectionFactory());
         return template;
     }
 }
